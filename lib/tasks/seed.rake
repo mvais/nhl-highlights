@@ -1,3 +1,5 @@
+require 'pry'
+
 namespace :db do
   namespace :seed do
     task :goals => :environment do
@@ -5,8 +7,24 @@ namespace :db do
 
       highlight  = NHL::Highlight.new(code)
       pbp        = NHL::PBP.new(code)
+      teams      = Team.all
 
-      # TODO: Populate Goals
+      highlight_goals = highlight.events.filter(&:event_id).sort_by(&:event_id)
+      goals           = pbp.plays.filter(&:goal?)
+
+      highlight_goals.zip(goals).each do |highlight_goal, goal|
+        player = NHL::PBP::PlayerCreator.call(pbp.players, goal.goal_scorer.id)
+
+        highlight = Highlight.create(
+          nhl_season_id: pbp.season_id,
+          nhl_game_id: pbp.game_id,
+          nhl_event_id: goal.event_id,
+          player: player,
+          team: Team.where(team_id: goal.team.id)&.first,
+          playback: highlight_goal.playbacks,
+          date: pbp.date
+        )
+      end
     end
 
     task :teams => :environment do

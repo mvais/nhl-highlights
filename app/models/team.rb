@@ -13,6 +13,8 @@
 #  team_id      :integer
 #
 class Team < ApplicationRecord
+  has_many :highlights
+
   def logo_url
     "https://www-league.nhlstatic.com/images/logos/teams-20212022-light/#{team_id}.svg"
   end

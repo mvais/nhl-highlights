@@ -33,6 +33,10 @@ class NHL::PBP::Event
     ["missed_shot", "shot", "blocked_shot"].include? @event_type_id
   end
 
+  def goal_scorer
+    players.first.player if goal?
+  end
+
   private
 
   def setup(pbp, event)
