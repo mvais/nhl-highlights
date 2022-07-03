@@ -13,4 +13,8 @@
 #
 class Player < ApplicationRecord
   has_many :highlights
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

@@ -1,94 +1,13 @@
-<h2 class="font-semibold text-2xl text-neutral-700">Feb 26th 2022</h1>
-<p class="text-sm my-2 text-neutral-500">Keep track of your security posture and stay compliant.</p>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-x-6 gap-y-6">
-  <a href="#">
-    <div class="border border-slate-300 p-6 rounded-md sm:w-full md:w-80 hover:shadow-md transition-shadow">
-      <div class="flex justify-between mb-1 font-bold">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/10.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Toronto Maple Leafs</span>
-        </div>
-        <span>10<span>
-      </div>
-      <div class="flex justify-between">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/17.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Detroit Red Wings</span>
-        </div>
-        <span>7</span>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+  <% @highlights.each do |highlight| %>
+    <div>
+      <video controls class="border rounded-lg">
+        <source src=<%= highlight.default_playback["url"] %> type="video/mp4">
+      </video>
+      <div class="text-xs mt-1 font-semibold flex items-center">
+        <span class="inline-block mr-1"><img height="32px" width="32px" src=<%= highlight.team.logo_url %> alt=""></span>
+        <span class="inline-block mt-1"><%= highlight.player.full_name %> (<%= format_position(highlight.player.position) %>)</span>
       </div>
     </div>
-  </a>
-  <a href="#">
-    <div class="border border-slate-300 p-6 rounded-md sm:w-full md:w-80 hover:shadow-md transition-shadow">
-      <div class="flex justify-between mb-1 font-bold">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/21.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Colorado Avalanche</span>
-        </div>
-        <span>3<span>
-      </div>
-      <div class="flex justify-between">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/54.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Vegas Golden Knights</span>
-        </div>
-        <span>2</span>
-      </div>
-    </div>
-  </a>
-  <a href="#">
-    <div class="border border-slate-300 p-6 rounded-md sm:w-full md:w-80 hover:shadow-md transition-shadow">
-      <div class="flex justify-between mb-1">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/20.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Minnesota Wild</span>
-        </div>
-        <span>3<span>
-      </div>
-      <div class="flex justify-between font-bold">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/30.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Calgary Flames</span>
-        </div>
-        <span>7</span>
-      </div>
-    </div>
-  </a>
-  <a href="#">
-    <div class="border border-slate-300 p-6 rounded-md sm:w-full md:w-80 hover:shadow-md transition-shadow">
-      <div class="flex justify-between mb-1">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/2.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">New York Islanders</span>
-        </div>
-        <span>2<span>
-      </div>
-      <div class="flex justify-between font-bold">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/26.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Los Angeles Kings</span>
-        </div>
-        <span>5</span>
-      </div>
-    </div>
-  </a>
-  <a href="#">
-    <div class="border border-slate-300 p-6 rounded-md sm:w-full md:w-80 hover:shadow-md transition-shadow">
-      <div class="flex justify-between mb-1 font-bold">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/6.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">Boston Bruins</span>
-        </div>
-        <span>3<span>
-      </div>
-      <div class="flex justify-between">
-        <div class="flex items-center">
-          <span class="inline-block mr-1"><img height="32px" width="32px" src="https://www-league.nhlstatic.com/images/logos/teams-20212022-light/28.svg" alt="Toronto Maple Leafs"></span>
-          <span class="text-md">San Jose Sharks</span>
-        </div>
-        <span>1</span>
-      </div>
-    </div>
-  </a>
+  <% end %>
 </div>

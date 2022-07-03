@@ -26,4 +26,8 @@
 class Highlight < ApplicationRecord
   belongs_to :player
   belongs_to :team
+
+  def default_playback
+    playback.find { |media| media["name"] == "FLASH_1800K_896x504" }
+  end
 end
