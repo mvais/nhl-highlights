@@ -1,17 +1,23 @@
 require 'pry'
-require 'httparty'
 
 namespace :db do
   namespace :seed do
     task :goals => :environment do
+      code = "2021030183"
+
       highlight  = NHL::Highlight.new(code)
       pbp        = NHL::PBP.new(code)
       teams      = Team.all
 
-      highlight_goals = highlight.events.filter(&:event_id).sort_by(&:event_id)
-      goals           = pbp.plays.filter(&:goal?)
+      goals           = pbp.plays.filter(&:goal?).sort_by(&:event_id)
+      goals_ids       = goals.map(&:event_id)
+      highlight_goals = highlight.events.filter { |highlight| goals_ids.include?(highlight.event_id) }.sort_by(&:event_id)
 
       highlight_goals.zip(goals).each do |highlight_goal, goal|
+        if goal.event_id != highlight_goal.event_id
+          puts "IDS Do Not Match"
+        end
+
         player = NHL::PBP::PlayerCreator.call(pbp.players, goal.goal_scorer.id)
 
         highlight = Highlight.create(
