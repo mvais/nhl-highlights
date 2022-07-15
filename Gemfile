@@ -85,3 +85,5 @@ group :development do
   # Used for running bin/dev
   gem "foreman", "~> 0.87.2"
 end
+
+gem "pagy", "~> 5.10"

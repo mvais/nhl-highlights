@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-  <% @highlights.each do |highlight| %>
+  <% @records.each do |highlight| %>
     <div>
       <video controls class="border rounded-lg">
         <source src=<%= highlight.default_playback["url"] %> type="video/mp4">
@@ -10,4 +10,8 @@
       </div>
     </div>
   <% end %>
+</div>
+
+<div class="mt-8">
+  <%== pagy_nav(@pagy) %>
 </div>
