@@ -3,33 +3,41 @@ require 'pry'
 namespace :db do
   namespace :seed do
     task :goals => :environment do
-      code = "2021030183"
+      schedule = NHL::Schedule.new("20212022")
 
-      highlight  = NHL::Highlight.new(code)
-      pbp        = NHL::PBP.new(code)
-      teams      = Team.all
-
-      goals           = pbp.plays.filter(&:goal?).sort_by(&:event_id)
-      goals_ids       = goals.map(&:event_id)
-      highlight_goals = highlight.events.filter { |highlight| goals_ids.include?(highlight.event_id) }.sort_by(&:event_id)
-
-      highlight_goals.zip(goals).each do |highlight_goal, goal|
-        if goal.event_id != highlight_goal.event_id
-          puts "IDS Do Not Match"
+      schedule.dates.each do |date|
+        date.games.each do |game|
+          puts "Creating Highlights - #{game.gamePk} - #{game.gameDate}: #{game.teams.away.team.name} vs #{game.teams.home.team.name}"
+          code       = game.gamePk
+          highlight  = NHL::Highlight.new(code)
+          pbp        = NHL::PBP.new(code)
+          teams      = Team.all
+    
+          goals           = pbp.plays.filter(&:goal?).sort_by(&:event_id)
+          goals_ids       = goals.map(&:event_id)
+          highlight_goals = highlight.events.filter { |highlight| goals_ids.include?(highlight.event_id) }.sort_by(&:event_id)
+    
+          highlight_goals.zip(goals).each do |highlight_goal, goal|
+            if goal&.event_id != highlight_goal&.event_id
+              puts "Unable to generate Highlight: Highlight #{highlight_goal&.event_id} - Goal #{goal&.event_id}"
+              next
+            end
+    
+            player = NHL::PBP::PlayerCreator.call(pbp.players, goal.goal_scorer.id)
+    
+            highlight = Highlight.create(
+              nhl_season_id: pbp.season_id,
+              nhl_game_id: pbp.game_id,
+              nhl_event_id: goal.event_id,
+              player: player,
+              team: Team.where(team_id: goal.team.id)&.first,
+              playback: highlight_goal.playbacks,
+              date: pbp.date
+            )
+          end
         end
-
-        player = NHL::PBP::PlayerCreator.call(pbp.players, goal.goal_scorer.id)
-
-        highlight = Highlight.create(
-          nhl_season_id: pbp.season_id,
-          nhl_game_id: pbp.game_id,
-          nhl_event_id: goal.event_id,
-          player: player,
-          team: Team.where(team_id: goal.team.id)&.first,
-          playback: highlight_goal.playbacks,
-          date: pbp.date
-        )
       end
+
     end
 
     task :teams => :environment do
