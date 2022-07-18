@@ -23,5 +23,6 @@ class NHL::Highlight
     end
 
     @events = response.dig('highlights', 'scoreboard', 'items').map { |highlight| NHL::Highlight::Event.new(highlight, @code) }
+    @events = @events.uniq { |highlight| [highlight.event_id] }
   end
 end

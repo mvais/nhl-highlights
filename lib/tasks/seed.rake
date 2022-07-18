@@ -7,22 +7,30 @@ namespace :db do
 
       schedule.dates.each do |date|
         date.games.each do |game|
-          puts "Creating Highlights - #{game.gamePk} - #{game.gameDate}: #{game.teams.away.team.name} vs #{game.teams.home.team.name}"
           code       = game.gamePk
           highlight  = NHL::Highlight.new(code)
           pbp        = NHL::PBP.new(code)
           teams      = Team.all
-    
+
           goals           = pbp.plays.filter(&:goal?).sort_by(&:event_id)
           goals_ids       = goals.map(&:event_id)
-          highlight_goals = highlight.events.filter { |highlight| goals_ids.include?(highlight.event_id) }.sort_by(&:event_id)
-    
+          highlight_goals = highlight.events
+                              .filter { |highlight| goals_ids.include?(highlight.event_id) }
+                              .sort_by(&:event_id)
+          highlight_ids   = highlight_goals.map(&:event_id)
+
+          next if highlight_goals.empty?
+
+          goals = goals.filter { |goal| highlight_ids.include?(goal.event_id) }
+
+          if goals_ids != highlight_ids
+            puts "Unable to Create Highlights - #{game.gamePk} - #{game.gameDate}: #{game.teams.away.team.name} vs #{game.teams.home.team.name}"
+            next
+          end
+
           highlight_goals.zip(goals).each do |highlight_goal, goal|
-            if goal&.event_id != highlight_goal&.event_id
-              puts "Unable to generate Highlight: Highlight #{highlight_goal&.event_id} - Goal #{goal&.event_id}"
-              next
-            end
-    
+            puts "Creating Highlights - #{game.gamePk} - #{game.gameDate}: #{game.teams.away.team.name} vs #{game.teams.home.team.name}"
+
             player = NHL::PBP::PlayerCreator.call(pbp.players, goal.goal_scorer.id)
     
             highlight = Highlight.create(
@@ -37,7 +45,6 @@ namespace :db do
           end
         end
       end
-
     end
 
     task :teams => :environment do

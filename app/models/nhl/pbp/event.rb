@@ -14,7 +14,7 @@ class NHL::PBP::Event
   end
 
   def goal?
-    @event_type_id == "goal"
+    @event_type_id == "goal" && @period_type.downcase != "shootout"
   end
 
   def shot?
@@ -31,6 +31,10 @@ class NHL::PBP::Event
 
   def shot_attempt?
     ["missed_shot", "shot", "blocked_shot"].include? @event_type_id
+  end
+
+  def shootout_goal?
+    @event_type_id == "goal" && @period_type.downcase == "shootout"
   end
 
   def goal_scorer
